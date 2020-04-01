@@ -1,7 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
@@ -14,6 +13,10 @@
     <PackageReference Include="Scrutor" Version="3.2.0" />
     <PackageReference Include="Stateless" Version="5.0.0" />
     <PackageReference Include="Scrutor" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Extensions\" />
   </ItemGroup>
 
 </Project>

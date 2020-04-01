@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-namespace Stateless.Web.Application.Controllers
+﻿namespace Stateless.Web.Application.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -15,11 +15,11 @@ namespace Stateless.Web.Application.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<WeatherForecastController> logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         [HttpGet]

@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Stateless.Web.LiteDB\Stateless.Web.LiteDB.csproj" />
-    <ProjectReference Include="..\..\src\Stateless.Web\Stateless.Web\Stateless.Web.csproj" />
+    <ProjectReference Include="..\..\src\Stateless.Web\Stateless.Web.csproj" />
   </ItemGroup>
 
 
