@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using LiteDB;
 
-    public class LiteDBWorkflowContextStorage : IWorkflowContextStorage
+    public class LiteDBWorkflowContextStorage : IStateMachineContextStorage
     {
         private readonly string connectionString;
 
@@ -12,27 +12,27 @@
             this.connectionString = connectionString ?? "workflow.db";
         }
 
-        public IEnumerable<WorkflowContext> FindAll()
+        public IEnumerable<StateMachineContext> FindAll()
         {
             using (var db = new LiteDatabase(this.connectionString))
             {
-                return db.GetCollection<WorkflowContext>().Query().ToList();
+                return db.GetCollection<StateMachineContext>().Query().ToList();
             }
         }
 
-        public WorkflowContext FindById(string id)
+        public StateMachineContext FindById(string id)
         {
             using (var db = new LiteDatabase(this.connectionString))
             {
-                return db.GetCollection<WorkflowContext>().FindById(id);
+                return db.GetCollection<StateMachineContext>().FindById(id);
             }
         }
 
-        public void Save(WorkflowContext entity)
+        public void Save(StateMachineContext entity)
         {
             using (var db = new LiteDatabase(this.connectionString))
             {
-                db.GetCollection<WorkflowContext>().Upsert(entity);
+                db.GetCollection<StateMachineContext>().Upsert(entity);
             }
         }
     }

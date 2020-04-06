@@ -22,24 +22,24 @@ namespace Stateless.Web.Application
             services.AddStateless(o =>
             {
                 o.UseLiteDBStorage();
-                o.Register(
-                    OnOffWorkflow.Name,
-                    OnOffWorkflow.States.Off, c =>
+                o.AddStateMachine(
+                    OnOffStateMachine.Name,
+                    OnOffStateMachine.States.Off, c =>
                     {
-                        c.Configure(OnOffWorkflow.States.Off)
+                        c.Configure(OnOffStateMachine.States.Off)
                             .OnActivate(() => Console.WriteLine("OFF!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is turned {t.Destination}"))
-                            .Permit(OnOffWorkflow.Triggers.Break, OnOffWorkflow.States.Broken)
-                            .Permit(OnOffWorkflow.Triggers.Switch, OnOffWorkflow.States.On);
-                        c.Configure(OnOffWorkflow.States.On)
+                            .Permit(OnOffStateMachine.Triggers.Break, OnOffStateMachine.States.Broken)
+                            .Permit(OnOffStateMachine.Triggers.Switch, OnOffStateMachine.States.On);
+                        c.Configure(OnOffStateMachine.States.On)
                             .OnActivate(() => Console.WriteLine("ON!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is turned {t.Destination}"))
-                            .Permit(OnOffWorkflow.Triggers.Break, OnOffWorkflow.States.Broken)
-                            .Permit(OnOffWorkflow.Triggers.Switch, OnOffWorkflow.States.Off);
-                        c.Configure(OnOffWorkflow.States.Broken)
+                            .Permit(OnOffStateMachine.Triggers.Break, OnOffStateMachine.States.Broken)
+                            .Permit(OnOffStateMachine.Triggers.Switch, OnOffStateMachine.States.Off);
+                        c.Configure(OnOffStateMachine.States.Broken)
                             .OnActivate(() => Console.WriteLine("BROKEN!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is broken {t.Destination}"))
-                            .Permit(OnOffWorkflow.Triggers.Repair, OnOffWorkflow.States.Off);
+                            .Permit(OnOffStateMachine.Triggers.Repair, OnOffStateMachine.States.Off);
                     });
             });
         }

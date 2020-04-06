@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class WorkflowContent
+    public class StateMachineContent
     {
         public string ContentType { get; set; }
 

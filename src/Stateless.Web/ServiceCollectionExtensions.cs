@@ -7,7 +7,7 @@
     {
         public static IServiceCollection AddStateless(
             this IServiceCollection services,
-            Action<WorkflowBuilder> optionsAction = null)
+            Action<StatelessBuilder> builderAction = null)
         {
             if (services == null)
             {
@@ -15,10 +15,10 @@
             }
 
             services.AddScoped<ITransitionDispatcher, TransitionDispatcher>();
-            AddWorkflowHandlers(services);
+            AddStatemachineHandlers(services);
 
-            var options = new WorkflowBuilder(services);
-            optionsAction?.Invoke(options);
+            var builder = new StatelessBuilder(services);
+            builderAction?.Invoke(builder);
 
             return services;
         }
@@ -27,7 +27,7 @@
         /// Add a workflow registration
         /// </summary>
         /// <param name="services">The services</param>
-        internal static IServiceCollection RegisterWorkflow(
+        internal static IServiceCollection RegisterStateMachine(
             this IServiceCollection services,
             string name,
             string initialState,
@@ -38,16 +38,16 @@
                 return services;
             }
 
-            return services.AddScoped<IWorkflowDefinition>(sp =>
+            return services.AddScoped<IStatemachineDefinition>(sp =>
             {
-                return new WorkflowDefinition(
+                return new StatemachineDefinition(
                         name,
                         initialState,
                         configuration);
             });
         }
 
-        private static void AddWorkflowHandlers(IServiceCollection services)
+        private static void AddStatemachineHandlers(IServiceCollection services)
         {
             services
                 .Scan(scan => scan

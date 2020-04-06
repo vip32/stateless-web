@@ -6,9 +6,9 @@
     {
         public static IApplicationBuilder UseStateless(
             this IApplicationBuilder builder,
-            WorkflowMiddlewareOptions options = default)
+            StateMachineMiddlewareOptions options = default)
         {
-            return builder.UseMiddleware<WorkflowMiddleware>(options ?? new WorkflowMiddlewareOptions());
+            return builder.UseMiddleware<StateMachineMiddleware>(options ?? new StateMachineMiddlewareOptions());
         }
     }
 }

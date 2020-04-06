@@ -1,6 +1,6 @@
 ﻿namespace Stateless.Web
 {
-    public static class OnOffWorkflow
+    public static class OnOffStateMachine
     {
         public const string Name = "onoff";
 

@@ -12,14 +12,14 @@
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
-    public class WorkflowMiddleware
+    public class StateMachineMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly WorkflowMiddlewareOptions options;
-        private readonly ILogger<WorkflowMiddleware> logger;
+        private readonly StateMachineMiddlewareOptions options;
+        private readonly ILogger<StateMachineMiddleware> logger;
         private readonly RouteMatcher routeMatcher;
 
-        public WorkflowMiddleware(RequestDelegate next, WorkflowMiddlewareOptions options, ILogger<WorkflowMiddleware> logger)
+        public StateMachineMiddleware(RequestDelegate next, StateMachineMiddlewareOptions options, ILogger<StateMachineMiddleware> logger)
         {
             this.next = next;
             this.options = options;
@@ -29,9 +29,9 @@
 
         public async Task Invoke(
             HttpContext httpContext,
-            IWorkflowContextStorage contextStorage,
-            IWorkflowContentStorage contentStorage,
-            IEnumerable<IWorkflowDefinition> definitions)
+            IStateMachineContextStorage contextStorage,
+            IStateMachineContentStorage contentStorage,
+            IEnumerable<IStatemachineDefinition> definitions)
         {
             if (!httpContext.Request.Path.StartsWithSegments(this.options.RoutePrefix, StringComparison.OrdinalIgnoreCase))
             {
@@ -75,12 +75,12 @@
 
         private async Task<bool> HandleGetAllRequest(
             HttpContext httpContext,
-            IWorkflowContextStorage contextStorage)
+            IStateMachineContextStorage contextStorage)
         {
             var segments = this.routeMatcher.Match(this.options.RoutePrefix + "/{name}", httpContext.Request.Path);
             if (segments?.ContainsKey("name") == true)
             {
-                this.logger.LogInformation($"workflow: get all (name={segments["name"]})");
+                this.logger.LogInformation($"statemachine: get all (name={segments["name"]})");
                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                 httpContext.Response.ContentType = "application/json";
                 await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(contextStorage.FindAll(), JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
@@ -93,12 +93,12 @@
 
         private async Task<bool> HandleGetByIdRequest(
             HttpContext httpContext,
-            IWorkflowContextStorage contextStorage)
+            IStateMachineContextStorage contextStorage)
         {
             var segments = this.routeMatcher.Match(this.options.RoutePrefix + "/{name}/{id}", httpContext.Request.Path);
             if (segments?.ContainsKey("name") == true && segments?.ContainsKey("id") == true)
             {
-                this.logger.LogInformation($"workflow: get by id (name={segments["name"]}, id={segments["id"]})");
+                this.logger.LogInformation($"statemachine: get by id (name={segments["name"]}, id={segments["id"]})");
                 var context = contextStorage.FindById(segments["id"] as string);
 
                 if (context?.Name?.Equals(segments["name"] as string, StringComparison.OrdinalIgnoreCase) == true)
@@ -120,14 +120,14 @@
 
         private async Task<bool> HandleGetTriggersRequest(
             HttpContext httpContext,
-            IWorkflowContextStorage contextStorage,
-            IEnumerable<IWorkflowDefinition> definitions,
+            IStateMachineContextStorage contextStorage,
+            IEnumerable<IStatemachineDefinition> definitions,
             ITransitionDispatcher dispatcher)
         {
             var segments = this.routeMatcher.Match(this.options.RoutePrefix + "/{name}/{id}/triggers", httpContext.Request.Path);
             if (segments?.ContainsKey("name") == true && segments?.ContainsKey("id") == true)
             {
-                this.logger.LogInformation($"workflow: get triggers (name={segments["name"]}, id={segments["id"]})");
+                this.logger.LogInformation($"statemachine: get triggers (name={segments["name"]}, id={segments["id"]})");
                 var definition = definitions.Safe()
                     .FirstOrDefault(d => d.Name.Equals(segments["name"] as string, StringComparison.OrdinalIgnoreCase));
                 if (definition == null)
@@ -149,11 +149,11 @@
                     return true;
                 }
 
-                var workflow = definition.Create(context, dispatcher);
+                var instance = definition.Create(context, dispatcher);
 
                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                 httpContext.Response.ContentType = "application/json";
-                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(workflow.PermittedTriggers, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(instance.PermittedTriggers, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
 
                 return true;
             }
@@ -163,15 +163,15 @@
 
         private async Task<bool> HandleCreateNewRequest(
             HttpContext httpContext,
-            IWorkflowContextStorage contextStorage,
-            IWorkflowContentStorage contentStorage,
-            IEnumerable<IWorkflowDefinition> definitions,
+            IStateMachineContextStorage contextStorage,
+            IStateMachineContentStorage contentStorage,
+            IEnumerable<IStatemachineDefinition> definitions,
             ITransitionDispatcher dispatcher)
         {
             var segments = this.routeMatcher.Match(this.options.RoutePrefix + "/{name}", httpContext.Request.Path);
             if (segments?.ContainsKey("name") == true)
             {
-                this.logger.LogInformation($"workflow: create new (name={segments["name"]})");
+                this.logger.LogInformation($"statemachine: create new (name={segments["name"]})");
                 var definition = definitions.Safe()
                     .FirstOrDefault(d => d.Name.Equals(segments["name"] as string, StringComparison.OrdinalIgnoreCase));
                 if (definition == null)
@@ -180,10 +180,10 @@
                     return true;
                 }
 
-                var context = new WorkflowContext() { Created = DateTime.UtcNow, Updated = DateTime.UtcNow };
+                var context = new StateMachineContext() { Created = DateTime.UtcNow, Updated = DateTime.UtcNow };
                 // TODO: place http request content somewhere (workflowInstance.Data property?)
-                var workflow = definition.Create(context, dispatcher);
-                workflow.Activate();
+                var instance = definition.Create(context, dispatcher);
+                instance.Activate();
 
                 // store content
                 var contentLength = httpContext.Request.ContentLength ?? 0;
@@ -221,15 +221,15 @@
 
         private async Task<bool> HandleFireTriggerRequest(
             HttpContext httpContext,
-            IWorkflowContextStorage contextStorage,
-            IWorkflowContentStorage contentStorage,
-            IEnumerable<IWorkflowDefinition> definitions,
+            IStateMachineContextStorage contextStorage,
+            IStateMachineContentStorage contentStorage,
+            IEnumerable<IStatemachineDefinition> definitions,
             ITransitionDispatcher dispatcher)
         {
             var segments = this.routeMatcher.Match(this.options.RoutePrefix + "/{name}/{id}/triggers/{trigger}", httpContext.Request.Path);
             if (segments?.ContainsKey("name") == true && segments?.ContainsKey("id") == true && segments?.ContainsKey("trigger") == true)
             {
-                this.logger.LogInformation($"workflow: fire trigger (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
+                this.logger.LogInformation($"statemachine: fire trigger (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
 
                 var definition = definitions.Safe()
                     .FirstOrDefault(d => d.Name.Equals(segments["name"] as string, StringComparison.OrdinalIgnoreCase));
@@ -252,29 +252,29 @@
                     return true;
                 }
 
-                var worklow = definition.Create(context, dispatcher);
+                var instance = definition.Create(context, dispatcher);
                 try
                 {
-                    if (await worklow.FireAsync(segments["trigger"] as string).ConfigureAwait(false))
+                    if (await instance.FireAsync(segments["trigger"] as string).ConfigureAwait(false))
                     {
-                        this.logger.LogInformation($"workflow: trigger successfull (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
+                        this.logger.LogInformation($"statemachine: trigger successfull (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
                         contextStorage.Save(context);
 
                         httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                     }
                     else
                     {
-                        this.logger.LogError($"workflow: trigger invalid (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
+                        this.logger.LogError($"statemachine: trigger invalid (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
                         httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     }
                 }
                 catch(Exception ex)
                 {
-                    this.logger.LogCritical(ex, $"workflow: trigger failed (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]}) {ex.Message}");
+                    this.logger.LogCritical(ex, $"statemachine: trigger failed (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]}) {ex.Message}");
                 }
                 finally
                 {
-                    this.logger.LogInformation($"workflow: permitted triggers={string.Join("|", worklow.PermittedTriggers)}");
+                    this.logger.LogInformation($"statemachine: permitted triggers={string.Join("|", instance.PermittedTriggers)}");
                     contextStorage.Save(context);
                 }
 

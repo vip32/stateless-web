@@ -2,11 +2,11 @@
 {
     using System;
 
-    public class WorkflowDefinition : IWorkflowDefinition
+    public class StatemachineDefinition : IStatemachineDefinition
     {
         private readonly Action<Workflow> configuration;
 
-        public WorkflowDefinition(
+        public StatemachineDefinition(
             string name,
             string initialState,
             Action<Workflow> configuration = null)
@@ -20,7 +20,7 @@
 
         public string InitialState { get; }
 
-        public Workflow Create(WorkflowContext context, ITransitionDispatcher dispatcher)
+        public Workflow Create(StateMachineContext context, ITransitionDispatcher dispatcher)
         {
             context.Name = this.Name;
             context.State ??= this.InitialState;

@@ -4,7 +4,7 @@
     using System.IO;
     using LiteDB;
 
-    public class LiteDBWorkflowContentStorage : IWorkflowContentStorage
+    public class LiteDBWorkflowContentStorage : IStateMachineContentStorage
     {
         // https://github.com/mbdavid/LiteDB/wiki/FileStorage
         private readonly string connectionString;
@@ -14,7 +14,7 @@
             this.connectionString = connectionString ?? "workflow.db";
         }
 
-        public Stream Load(WorkflowContext context, string key, Stream stream)
+        public Stream Load(StateMachineContext context, string key, Stream stream)
         {
             using (var db = new LiteDatabase(this.connectionString))
             {
@@ -27,7 +27,7 @@
             }
         }
 
-        public void Save(WorkflowContext context, string key, Stream stream, string contentType)
+        public void Save(StateMachineContext context, string key, Stream stream, string contentType)
         {
             using (var db = new LiteDatabase(this.connectionString))
             {
@@ -38,7 +38,7 @@
 
                 db.FileStorage.Upload($"{context.Id}/{key}", key, stream);
 
-                context.Content.Add(key, new WorkflowContent
+                context.Content.Add(key, new StateMachineContent
                 {
                     ContentType = contentType,
                     Size = stream.Length,

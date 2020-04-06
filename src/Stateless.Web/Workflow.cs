@@ -9,7 +9,7 @@
     {
         private readonly StateMachine<string, string> machine;
 
-        internal Workflow(WorkflowContext context, ITransitionDispatcher dispatcher, Action<Workflow> configuration = null)
+        internal Workflow(StateMachineContext context, ITransitionDispatcher dispatcher, Action<Workflow> configuration = null)
         {
             this.machine = new StateMachine<string, string>(context.State);
             configuration?.Invoke(this);
@@ -19,7 +19,7 @@
 
         public IEnumerable<string> PermittedTriggers => this.machine.PermittedTriggers;
 
-        public WorkflowContext Context { get; }
+        public StateMachineContext Context { get; }
 
         public ITransitionDispatcher Dispatcher { get; }
 

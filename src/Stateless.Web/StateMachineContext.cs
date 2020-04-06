@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public class WorkflowContext
+    public class StateMachineContext
     {
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
 
@@ -15,6 +15,6 @@
 
         public string State { get; set; }
 
-        public IDictionary<string, WorkflowContent> Content { get; set; } = new Dictionary<string, WorkflowContent>();
+        public IDictionary<string, StateMachineContent> Content { get; set; } = new Dictionary<string, StateMachineContent>();
     }
 }
