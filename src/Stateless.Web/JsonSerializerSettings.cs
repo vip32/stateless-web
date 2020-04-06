@@ -1,4 +1,4 @@
-﻿namespace Stateless.Web.Application.Workflow.Web
+﻿namespace Stateless.Web
 {
     using System.Collections.Generic;
     using Newtonsoft.Json;

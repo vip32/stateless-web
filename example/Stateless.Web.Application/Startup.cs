@@ -1,12 +1,12 @@
 namespace Stateless.Web.Application
 {
+    using System;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Stateless.Web;
-    using System;
 
     public class Startup
     {
@@ -42,7 +42,6 @@ namespace Stateless.Web.Application
                             .Permit(OnOffWorkflow.Triggers.Repair, OnOffWorkflow.States.Off);
                     });
             });
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
