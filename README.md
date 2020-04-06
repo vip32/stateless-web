@@ -1,2 +1,2 @@
 # stateless-web
-A simple extension for the great stateless library
+A simple web extension for the great stateless library
