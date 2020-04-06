@@ -11,8 +11,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-    using Newtonsoft.Json.Serialization;
 
     public class WorkflowMiddleware
     {
@@ -85,7 +83,7 @@
                 this.logger.LogInformation($"workflow: get all (name={segments["name"]})");
                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                 httpContext.Response.ContentType = "application/json";
-                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(contextStorage.FindAll(), DefaultJsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(contextStorage.FindAll(), JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
 
                 return true;
             }
@@ -107,7 +105,7 @@
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                     httpContext.Response.ContentType = "application/json";
-                    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(context, DefaultJsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+                    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(context, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
                 }
                 else
                 {
@@ -155,7 +153,7 @@
 
                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                 httpContext.Response.ContentType = "application/json";
-                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(workflow.PermittedTriggers, DefaultJsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(workflow.PermittedTriggers, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
 
                 return true;
             }
@@ -212,7 +210,7 @@
                 contextStorage.Save(context);
 
                 httpContext.Response.ContentType = "application/json";
-                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(context, DefaultJsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+                await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(context, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
                 // TODO: add location header >> this.CreatedAtAction(nameof(this.GetById), new { name, id = context.Id }, context);
 
                 return true;

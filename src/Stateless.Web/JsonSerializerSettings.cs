@@ -1,24 +1,15 @@
 ﻿namespace Stateless.Web.Application.Workflow.Web
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Serialization;
 
-    public static class DefaultJsonSerializerSettings
+    public static class JsonSerializerSettings
     {
-        public static JsonSerializerSettings Create()
+        public static Newtonsoft.Json.JsonSerializerSettings Create()
         {
-            return new JsonSerializerSettings
+            return new Newtonsoft.Json.JsonSerializerSettings
             {
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 NullValueHandling = NullValueHandling.Ignore,
