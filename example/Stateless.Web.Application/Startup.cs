@@ -19,7 +19,7 @@ namespace Stateless.Web.Application
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddWorkflow(o =>
+            services.AddStateless(o =>
             {
                 o.UseLiteDBStorage();
                 o.Register(
@@ -52,7 +52,9 @@ namespace Stateless.Web.Application
             }
 
             app.UseHttpsRedirection();
-            app.UseWorkflow();
+
+            app.UseStateless();
+
             app.UseRouting();
             app.UseAuthorization();
 

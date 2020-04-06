@@ -5,7 +5,7 @@
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddWorkflow(
+        public static IServiceCollection AddStateless(
             this IServiceCollection services,
             Action<WorkflowBuilder> optionsAction = null)
         {

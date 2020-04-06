@@ -4,7 +4,7 @@
 
     public static class WorkflowMiddlewareExtensions
     {
-        public static IApplicationBuilder UseWorkflow(
+        public static IApplicationBuilder UseStateless(
             this IApplicationBuilder builder,
             WorkflowMiddlewareOptions options = default)
         {
