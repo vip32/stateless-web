@@ -5,6 +5,8 @@ namespace Stateless.Web.Application
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Stateless.Web;
+    using System;
 
     public class Startup
     {
@@ -17,7 +19,30 @@ namespace Stateless.Web.Application
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddWorkflow(o =>
+            {
+                o.UseLiteDBStorage();
+                o.Register(
+                    OnOffWorkflow.Name,
+                    OnOffWorkflow.States.Off, c =>
+                    {
+                        c.Configure(OnOffWorkflow.States.Off)
+                            .OnActivate(() => Console.WriteLine("OFF!"))
+                            .OnEntry((t) => Console.WriteLine($"the switch is turned {t.Destination}"))
+                            .Permit(OnOffWorkflow.Triggers.Break, OnOffWorkflow.States.Broken)
+                            .Permit(OnOffWorkflow.Triggers.Switch, OnOffWorkflow.States.On);
+                        c.Configure(OnOffWorkflow.States.On)
+                            .OnActivate(() => Console.WriteLine("ON!"))
+                            .OnEntry((t) => Console.WriteLine($"the switch is turned {t.Destination}"))
+                            .Permit(OnOffWorkflow.Triggers.Break, OnOffWorkflow.States.Broken)
+                            .Permit(OnOffWorkflow.Triggers.Switch, OnOffWorkflow.States.Off);
+                        c.Configure(OnOffWorkflow.States.Broken)
+                            .OnActivate(() => Console.WriteLine("BROKEN!"))
+                            .OnEntry((t) => Console.WriteLine($"the switch is broken {t.Destination}"))
+                            .Permit(OnOffWorkflow.Triggers.Repair, OnOffWorkflow.States.Off);
+                    });
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -28,6 +53,7 @@ namespace Stateless.Web.Application
             }
 
             app.UseHttpsRedirection();
+            app.UseWorkflow();
             app.UseRouting();
             app.UseAuthorization();
 

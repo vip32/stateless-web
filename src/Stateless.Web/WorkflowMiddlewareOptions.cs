@@ -1,4 +1,4 @@
-﻿namespace Stateless.Web.Application.Workflow.Web
+﻿namespace Stateless.Web
 {
     public class WorkflowMiddlewareOptions
     {
