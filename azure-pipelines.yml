@@ -52,8 +52,10 @@ steps:
     custom: nuget
     arguments: >
       push $(Build.ArtifactStagingDirectory)/*.nupkg
-      -s https://api.nuget.org/v3/index.json
-      -k oy2ayazwu35tsgidjxyqiftexea7sgputkr6g24zttejwq
+      --source https://api.nuget.org/v3/index.json
+      --api-key oy2ayazwu35tsgidjxyqiftexea7sgputkr6g24zttejwq
+      --no-symbols
+      --skip-duplicate
 
 #- task: DotNetCoreCLI@2 $(NuGetSourceServerApiKey)
 #  displayName: Push nuget
