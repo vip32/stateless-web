@@ -64,4 +64,4 @@ steps:
 #    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
 #    nobuild: true
 #    nuGetFeedType: 'external'
-#    publishFeedCredentials: 'nuget' # service connection name DOES NOT WORK
+#    publishFeedCredentials: 'nuget' # service connection name DOES NOT WORK!
