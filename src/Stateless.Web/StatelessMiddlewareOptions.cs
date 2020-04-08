@@ -2,6 +2,6 @@
 {
     public class StatelessMiddlewareOptions
     {
-        public string RoutePrefix { get; set; } = "/api/machines";
+        public string RoutePrefix { get; set; } = "/api/stateless";
     }
 }

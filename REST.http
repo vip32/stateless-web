@@ -8,7 +8,7 @@
 @id = {{create_new.response.body.$.id}}
 @name = {{create_new.response.body.$.name}}
 
-POST {{baseUrl}}/api/machines/onoff HTTP/1.1
+POST {{baseUrl}}/api/stateless/onoff HTTP/1.1
 Content-Type: application/json
 
 {
@@ -18,23 +18,23 @@ Content-Type: application/json
 
 ###################################################################################
 ### STATEMACHINE::GET_ALL
-GET {{baseUrl}}/api/machines/{{name}} HTTP/1.1
+GET {{baseUrl}}/api/stateless/{{name}} HTTP/1.1
 Content-Type: application/json
 
 #############################
 ######################################################
 ### STATEMACHINE::GET_BY_ID
-GET {{baseUrl}}/api/machines/{{name}}/{{id}} HTTP/1.1
+GET {{baseUrl}}/api/stateless/{{name}}/{{id}} HTTP/1.1
 Content-Type: application/json
 
 ###################################################################################
 ### STATEMACHINE::GET_TRIGGERS
-GET {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers HTTP/1.1
+GET {{baseUrl}}/api/stateless/{{name}}/{{id}}/triggers HTTP/1.1
 Content-Type: application/json
 
 ###################################################################################
 ### STATEMACHINE::FIRE_TRIGGER ONOFF > Switch
-PUT {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers/switch HTTP/1.1
+PUT {{baseUrl}}/api/stateless/{{name}}/{{id}}/triggers/switch HTTP/1.1
 Content-Type: application/json
 
 {
@@ -44,10 +44,10 @@ Content-Type: application/json
 
 ###################################################################################
 ### STATEMACHINE::FIRE_TRIGGER ONOFF > Break
-PUT {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers/break HTTP/1.1
+PUT {{baseUrl}}/api/stateless/{{name}}/{{id}}/triggers/break HTTP/1.1
 Content-Type: application/json
 
 ###################################################################################
 ### STATEMACHINE::FIRE_TRIGGER ONOFF > Repair
-PUT {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers/repair HTTP/1.1
+PUT {{baseUrl}}/api/stateless/{{name}}/{{id}}/triggers/repair HTTP/1.1
 Content-Type: application/json

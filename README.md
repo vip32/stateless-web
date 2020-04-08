@@ -55,3 +55,6 @@ public static class OnOffStateMachine
     }
 }
 ```
+
+#### Example requests
+[here](REST.http)
