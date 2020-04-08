@@ -1,0 +1,49 @@
+variables:
+  solution: '**/*.sln'
+  buildConfiguration: 'Release'
+
+trigger:
+- master
+- develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: GitVersion@5
+  displayName: Apply git version
+
+- task: UseDotNet@2
+  displayName: Install dotnet SDK
+  inputs:
+    version: '3.1.x'
+    packageType: sdk
+
+- task: DotNetCoreCLI@2
+  displayName: Build projects
+  inputs:
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration) /p:Version=$(GitVersion.NuGetVersionV2);AssemblyVersion=$(GitVersion.AssemblySemVer);FileVersion=$(GitVersion.AssemblySemVer);InformationalVersion=$(GitVersion.InformationalVersion)'
+
+- task: DotNetCoreCLI@2
+  displayName: Run unit tests
+  enabled: false
+  inputs:
+    command: test
+    projects: '**/*[Tt]ests/*UnitTests.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore --no-build'
+
+- task: DotNetCoreCLI@2
+  displayName: Pack nuget
+  inputs:
+    command: pack
+    packagesToPack: '**/*.csproj'
+    versioningScheme: 'off'
+
+- task: DotNetCoreCLI@2
+  displayName: Push nuget
+  inputs:
+    command: push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'nuget hangfire.dashboard.dark' # service connection name

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Stateless.Web.LiteDB</AssemblyName>
+    <RootNamespace>Stateless.Web</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
