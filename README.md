@@ -34,7 +34,7 @@ Startup.cs::Configure()
 app.UseStateless();
 ```
 
-#### State machine
+#### Example state machine
 ```
 public static class OnOffStateMachine
 {
@@ -56,5 +56,5 @@ public static class OnOffStateMachine
 }
 ```
 
-#### Example requests
+#### Example http requests
 [here](REST.http)
