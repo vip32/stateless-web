@@ -19,6 +19,7 @@ namespace Stateless.Web.Application
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddStateless(o =>
             {
                 o.UseLiteDBStorage();

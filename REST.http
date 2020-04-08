@@ -1,0 +1,53 @@
+# top use this install this vs code extension:
+
+@baseUrl = https://localhost:5001
+
+###################################################################################
+### STATEMACHINE::CREATE_NEW ONOFF
+# @name create_new
+@id = {{create_new.response.body.$.id}}
+@name = {{create_new.response.body.$.name}}
+
+POST {{baseUrl}}/api/machines/onoff HTTP/1.1
+Content-Type: application/json
+
+{
+    "prop1": 123,
+    "prop2": 345
+}
+
+###################################################################################
+### STATEMACHINE::GET_ALL
+GET {{baseUrl}}/api/machines/{{name}} HTTP/1.1
+Content-Type: application/json
+
+#############################
+######################################################
+### STATEMACHINE::GET_BY_ID
+GET {{baseUrl}}/api/machines/{{name}}/{{id}} HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### STATEMACHINE::GET_TRIGGERS
+GET {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### STATEMACHINE::FIRE_TRIGGER ONOFF > Switch
+PUT {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers/switch HTTP/1.1
+Content-Type: application/json
+
+{
+    "prop3": 567,
+    "prop4": 789
+}
+
+###################################################################################
+### STATEMACHINE::FIRE_TRIGGER ONOFF > Break
+PUT {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers/break HTTP/1.1
+Content-Type: application/json
+
+###################################################################################
+### STATEMACHINE::FIRE_TRIGGER ONOFF > Repair
+PUT {{baseUrl}}/api/machines/{{name}}/{{id}}/triggers/repair HTTP/1.1
+Content-Type: application/json
