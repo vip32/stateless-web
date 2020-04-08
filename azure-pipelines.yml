@@ -1,7 +1,9 @@
 variables:
   solution: '**/*.sln'
   buildConfiguration: 'Release'
-  group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
+
+variables:
+- group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
 
 trigger:
 - master
@@ -53,7 +55,7 @@ steps:
     arguments: >
       push $(Build.ArtifactStagingDirectory)/*.nupkg
       --source https://api.nuget.org/v3/index.json
-      --api-key oy2ayazwu35tsgidjxyqiftexea7sgputkr6g24zttejwq
+      --api-key $(NuGetSourceServerApiKey)
       --no-symbols
       --skip-duplicate
 
