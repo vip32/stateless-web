@@ -27,17 +27,17 @@ namespace Stateless.Web.Application
                     OnOffStateMachine.States.Off, c =>
                     {
                         c.Configure(OnOffStateMachine.States.Off)
-                            .OnActivate(() => Console.WriteLine("OFF!"))
+                            .OnActivate(() => Console.WriteLine("-OFF!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is turned {t.Destination}"))
                             .Permit(OnOffStateMachine.Triggers.Break, OnOffStateMachine.States.Broken)
                             .Permit(OnOffStateMachine.Triggers.Switch, OnOffStateMachine.States.On);
                         c.Configure(OnOffStateMachine.States.On)
-                            .OnActivate(() => Console.WriteLine("ON!"))
+                            .OnActivate(() => Console.WriteLine("-ON!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is turned {t.Destination}"))
                             .Permit(OnOffStateMachine.Triggers.Break, OnOffStateMachine.States.Broken)
                             .Permit(OnOffStateMachine.Triggers.Switch, OnOffStateMachine.States.Off);
                         c.Configure(OnOffStateMachine.States.Broken)
-                            .OnActivate(() => Console.WriteLine("BROKEN!"))
+                            .OnActivate(() => Console.WriteLine("-BROKEN!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is broken {t.Destination}"))
                             .Permit(OnOffStateMachine.Triggers.Repair, OnOffStateMachine.States.Off);
                     });
