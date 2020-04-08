@@ -10,5 +10,4 @@
     <ProjectReference Include="..\..\src\Stateless.Web\Stateless.Web.csproj" />
   </ItemGroup>
 
-
 </Project>

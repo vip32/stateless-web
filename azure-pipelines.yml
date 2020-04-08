@@ -53,13 +53,13 @@ steps:
     arguments: >
       push $(Build.ArtifactStagingDirectory)/*.nupkg
       -s https://api.nuget.org/v3/index.json
-      -k $(NuGetSourceServerApiKey)
+      -k oy2ayazwu35tsgidjxyqiftexea7sgputkr6g24zttejwq
 
-#- task: DotNetCoreCLI@2
+#- task: DotNetCoreCLI@2 $(NuGetSourceServerApiKey)
 #  displayName: Push nuget
 #  inputs:
 #    command: push
 #    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
 #    nobuild: true
 #    nuGetFeedType: 'external'
-#    publishFeedCredentials: 'nuget' # service connection name
+#    publishFeedCredentials: 'nuget' # service connection name DOES NOT WORK
