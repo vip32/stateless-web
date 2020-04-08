@@ -34,16 +34,21 @@ steps:
     arguments: '--configuration $(buildConfiguration) --no-restore --no-build'
 
 - task: DotNetCoreCLI@2
-  displayName: Pack nuget
+  displayName: Package nuget
   inputs:
     command: pack
+    configuration: $(buildConfiguration)
     packagesToPack: '**/*.csproj'
-    versioningScheme: 'off'
+    nobuild: true
+    packDirectory: '$(System.ArtifactStagingDirectory)'
+    buildProperties: 'Version=$(GitVersion.NuGetVersion)'
+    verbosityPack: Normal
 
 - task: DotNetCoreCLI@2
   displayName: Push nuget
   inputs:
     command: push
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nobuild: true
     nuGetFeedType: 'external'
     publishFeedCredentials: 'nuget' # service connection name
