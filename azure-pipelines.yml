@@ -1,6 +1,7 @@
 variables:
   solution: '**/*.sln'
   buildConfiguration: 'Release'
+  group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
 
 trigger:
 - master
@@ -34,7 +35,7 @@ steps:
     arguments: '--configuration $(buildConfiguration) --no-restore --no-build'
 
 - task: DotNetCoreCLI@2
-  displayName: Package nuget
+  displayName: Package Nuget packages
   inputs:
     command: pack
     configuration: $(buildConfiguration)
@@ -45,10 +46,20 @@ steps:
     verbosityPack: Normal
 
 - task: DotNetCoreCLI@2
-  displayName: Push nuget
+  displayName: Push Nuget packages # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160#issuecomment-509044113
   inputs:
-    command: push
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nobuild: true
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'nuget' # service connection name
+    command: custom
+    custom: nuget
+    arguments: >
+      push $(Build.ArtifactStagingDirectory)/*.nupkg
+      -s https://api.nuget.org/v3/index.json
+      -k $(NuGetSourceServerApiKey)
+
+#- task: DotNetCoreCLI@2
+#  displayName: Push nuget
+#  inputs:
+#    command: push
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+#    nobuild: true
+#    nuGetFeedType: 'external'
+#    publishFeedCredentials: 'nuget' # service connection name
