@@ -40,7 +40,7 @@ steps:
     configuration: $(buildConfiguration)
     packagesToPack: '**/*.csproj'
     nobuild: true
-    packDirectory: '$(System.ArtifactStagingDirectory)'
+    packDirectory: '$(Build.ArtifactStagingDirectory)'
     buildProperties: 'Version=$(GitVersion.NuGetVersion)'
     verbosityPack: Normal
 
