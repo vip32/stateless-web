@@ -1,7 +1,7 @@
 variables:
+  group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
   solution: '**/*.sln'
   buildConfiguration: 'Release'
-- group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
 
 trigger:
 - master
