@@ -35,7 +35,7 @@ steps:
     arguments: '--configuration $(buildConfiguration) --no-restore --no-build'
 
 - task: DotNetCoreCLI@2
-  displayName: Package Nuget packages
+  displayName: Package nuget packages
   inputs:
     command: pack
     configuration: $(buildConfiguration)
@@ -46,7 +46,7 @@ steps:
     verbosityPack: Normal
 
 - task: DotNetCoreCLI@2
-  displayName: Push Nuget packages # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160#issuecomment-509044113
+  displayName: Push nuget packages # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160#issuecomment-509044113
   inputs:
     command: custom
     custom: nuget
