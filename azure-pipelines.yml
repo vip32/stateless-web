@@ -1,7 +1,7 @@
 variables:
-  group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
-  solution: '**/*.sln'
-  buildConfiguration: 'Release'
+- group: vars # azure pipelines variable group https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azdevops&tabs=yaml
+- name: buildConfiguration
+  value: 'Release'
 
 trigger:
 - master
@@ -23,7 +23,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Build projects
   inputs:
-    projects: '$(solution)'
+    projects: '**/*.sln'
     arguments: '--configuration $(buildConfiguration) /p:Version=$(GitVersion.NuGetVersionV2);AssemblyVersion=$(GitVersion.AssemblySemVer);FileVersion=$(GitVersion.AssemblySemVer);InformationalVersion=$(GitVersion.InformationalVersion)'
 
 - task: DotNetCoreCLI@2
