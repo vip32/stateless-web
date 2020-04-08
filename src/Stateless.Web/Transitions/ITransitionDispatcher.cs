@@ -4,8 +4,8 @@
 
     public interface ITransitionDispatcher
     {
-        Task OnEntryAsync(Workflow workflow);
+        Task OnEntryAsync(StateMachine stateMachine);
 
-        Task OnExitAsync(Workflow workflow);
+        Task OnExitAsync(StateMachine stateMachine);
     }
 }

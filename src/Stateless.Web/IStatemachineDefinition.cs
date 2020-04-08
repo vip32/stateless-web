@@ -6,6 +6,6 @@
 
         string InitialState { get; }
 
-        Workflow Create(StateMachineContext instance, ITransitionDispatcher dispatcher);
+        StateMachine Create(StateMachineContext instance, ITransitionDispatcher dispatcher);
     }
 }

@@ -4,14 +4,14 @@
     using System.IO;
     using LiteDB;
 
-    public class LiteDBWorkflowContentStorage : IStateMachineContentStorage
+    public class LiteDBStateMachineContentStorage : IStateMachineContentStorage
     {
         // https://github.com/mbdavid/LiteDB/wiki/FileStorage
         private readonly string connectionString;
 
-        public LiteDBWorkflowContentStorage(string connectionString = null)
+        public LiteDBStateMachineContentStorage(string connectionString = null)
         {
-            this.connectionString = connectionString ?? "workflow.db";
+            this.connectionString = connectionString ?? "stateless.db";
         }
 
         public Stream Load(StateMachineContext context, string key, Stream stream)

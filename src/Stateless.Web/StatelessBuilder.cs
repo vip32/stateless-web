@@ -12,7 +12,7 @@
 
         public IServiceCollection Services { get; }
 
-        public StatelessBuilder AddStateMachine(string name, string initialState, Action<Workflow> configurationAction)
+        public StatelessBuilder AddStateMachine(string name, string initialState, Action<StateMachine> configurationAction)
         {
             if (this.Services == null)
             {

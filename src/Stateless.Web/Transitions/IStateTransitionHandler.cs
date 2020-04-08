@@ -4,10 +4,10 @@
 
     public interface IStateTransitionHandler
     {
-        bool CanHandle(Workflow workflow);
+        bool CanHandle(StateMachine stateMachine);
 
-        Task OnEntryAsync(Workflow workflow);
+        Task OnEntryAsync(StateMachine stateMachine);
 
-        Task OnExitAsync(Workflow workflow);
+        Task OnExitAsync(StateMachine stateMachine);
     }
 }

@@ -12,24 +12,24 @@
             this.handlers = handlers;
         }
 
-        public async Task OnEntryAsync(Workflow workflow)
+        public async Task OnEntryAsync(StateMachine stateMachine)
         {
             foreach (var handler in this.handlers.Safe())
             {
-                if (handler.CanHandle(workflow))
+                if (handler.CanHandle(stateMachine))
                 {
-                    await handler.OnEntryAsync(workflow).ConfigureAwait(false);
+                    await handler.OnEntryAsync(stateMachine).ConfigureAwait(false);
                 }
             }
         }
 
-        public async Task OnExitAsync(Workflow workflow)
+        public async Task OnExitAsync(StateMachine stateMachine)
         {
             foreach (var handler in this.handlers.Safe())
             {
-                if (handler.CanHandle(workflow))
+                if (handler.CanHandle(stateMachine))
                 {
-                    await handler.OnExitAsync(workflow).ConfigureAwait(false);
+                    await handler.OnExitAsync(stateMachine).ConfigureAwait(false);
                 }
             }
         }

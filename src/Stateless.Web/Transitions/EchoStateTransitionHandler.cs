@@ -12,20 +12,20 @@
             this.logger = logger;
         }
 
-        public bool CanHandle(Workflow workflow)
+        public bool CanHandle(StateMachine stateMachine)
         {
             return true;
         }
 
-        public Task OnEntryAsync(Workflow workflow)
+        public Task OnEntryAsync(StateMachine stateMachine)
         {
-            this.logger?.LogInformation($"state entry: {workflow.Context.State} (handler={this.GetType().Name})");
+            this.logger?.LogInformation($"state entry: {stateMachine.Context.State} (handler={this.GetType().Name})");
             return Task.CompletedTask;
         }
 
-        public Task OnExitAsync(Workflow workflow)
+        public Task OnExitAsync(StateMachine stateMachine)
         {
-            this.logger?.LogInformation($"state exit: {workflow.Context.State} (handler={this.GetType().Name})");
+            this.logger?.LogInformation($"state exit: {stateMachine.Context.State} (handler={this.GetType().Name})");
             return Task.CompletedTask;
         }
     }

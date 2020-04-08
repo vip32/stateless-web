@@ -24,14 +24,14 @@
         }
 
         /// <summary>
-        /// Add a workflow registration
+        /// Add a state machine registration
         /// </summary>
         /// <param name="services">The services</param>
         internal static IServiceCollection RegisterStateMachine(
             this IServiceCollection services,
             string name,
             string initialState,
-            Action<Workflow> configuration)
+            Action<StateMachine> configuration)
         {
             if (services == null)
             {

@@ -4,12 +4,12 @@
 
     public class StatemachineDefinition : IStatemachineDefinition
     {
-        private readonly Action<Workflow> configuration;
+        private readonly Action<StateMachine> configuration;
 
         public StatemachineDefinition(
             string name,
             string initialState,
-            Action<Workflow> configuration = null)
+            Action<StateMachine> configuration = null)
         {
             this.Name = name;
             this.InitialState = initialState;
@@ -20,11 +20,11 @@
 
         public string InitialState { get; }
 
-        public Workflow Create(StateMachineContext context, ITransitionDispatcher dispatcher)
+        public StateMachine Create(StateMachineContext context, ITransitionDispatcher dispatcher)
         {
             context.Name = this.Name;
             context.State ??= this.InitialState;
-            return new Workflow(context, dispatcher, this.configuration);
+            return new StateMachine(context, dispatcher, this.configuration);
         }
     }
 }

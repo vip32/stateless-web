@@ -3,13 +3,13 @@
     using System.Collections.Generic;
     using LiteDB;
 
-    public class LiteDBWorkflowContextStorage : IStateMachineContextStorage
+    public class LiteDBStateMachineContextStorage : IStateMachineContextStorage
     {
         private readonly string connectionString;
 
-        public LiteDBWorkflowContextStorage(string connectionString = null)
+        public LiteDBStateMachineContextStorage(string connectionString = null)
         {
-            this.connectionString = connectionString ?? "workflow.db";
+            this.connectionString = connectionString ?? "stateless.db";
         }
 
         public IEnumerable<StateMachineContext> FindAll()

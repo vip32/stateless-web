@@ -181,7 +181,6 @@
                 }
 
                 var context = new StateMachineContext() { Created = DateTime.UtcNow, Updated = DateTime.UtcNow };
-                // TODO: place http request content somewhere (workflowInstance.Data property?)
                 var instance = definition.Create(context, dispatcher);
                 instance.Activate();
 

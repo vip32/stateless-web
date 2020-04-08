@@ -5,11 +5,11 @@
     using System.Threading.Tasks;
     using Stateless;
 
-    public class Workflow
+    public class StateMachine
     {
         private readonly StateMachine<string, string> machine;
 
-        internal Workflow(StateMachineContext context, ITransitionDispatcher dispatcher, Action<Workflow> configuration = null)
+        internal StateMachine(StateMachineContext context, ITransitionDispatcher dispatcher, Action<StateMachine> configuration = null)
         {
             this.machine = new StateMachine<string, string>(context.State);
             configuration?.Invoke(this);

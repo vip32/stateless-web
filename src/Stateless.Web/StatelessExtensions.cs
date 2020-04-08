@@ -4,7 +4,7 @@
 
     public static class StatelessExtensions
     {
-        public static StateConfiguration Configure(this Workflow source, string state)
+        public static StateConfiguration Configure(this StateMachine source, string state)
         {
             return source.Configure(state)
                 .OnEntryAsync(async t =>

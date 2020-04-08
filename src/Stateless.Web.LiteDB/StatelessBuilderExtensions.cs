@@ -2,7 +2,7 @@
 {
     using Microsoft.Extensions.DependencyInjection;
 
-    public static class WorkflowBuilderExtensions
+    public static class StatelessBuilderExtensions
     {
         public static StatelessBuilder UseLiteDBStorage(this StatelessBuilder source, string connectionString = null)
         {
@@ -11,8 +11,8 @@
                 return source;
             }
 
-            source.Services.AddScoped<IStateMachineContextStorage>(sp => new LiteDBWorkflowContextStorage(connectionString));
-            source.Services.AddScoped<IStateMachineContentStorage>(sp => new LiteDBWorkflowContentStorage(connectionString));
+            source.Services.AddScoped<IStateMachineContextStorage>(sp => new LiteDBStateMachineContextStorage(connectionString));
+            source.Services.AddScoped<IStateMachineContentStorage>(sp => new LiteDBStateMachineContentStorage(connectionString));
 
             return source;
         }
