@@ -46,4 +46,4 @@ steps:
     command: push
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
     nuGetFeedType: 'external'
-    publishFeedCredentials: 'nuget hangfire.dashboard.dark' # service connection name
+    publishFeedCredentials: 'nuget' # service connection name
