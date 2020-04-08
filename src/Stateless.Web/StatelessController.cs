@@ -13,8 +13,8 @@
 //namespace Stateless.Web.Controllers
 //{
 //    [ApiController]
-//    [Route("api/workflows")]
-//    public class WorkflowController : ControllerBase
+//    [Route("api/machines")]
+//    public class StatelessController : ControllerBase
 //    {
 //        private readonly ILogger<WorkflowController> logger;
 //        private readonly IEnumerable<IWorkflowDefinition> definitions;

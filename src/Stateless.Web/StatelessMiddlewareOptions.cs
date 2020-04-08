@@ -1,6 +1,6 @@
 ﻿namespace Stateless.Web
 {
-    public class StateMachineMiddlewareOptions
+    public class StatelessMiddlewareOptions
     {
         public string RoutePrefix { get; set; } = "/api/machines";
     }

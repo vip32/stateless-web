@@ -12,14 +12,14 @@
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
 
-    public class StateMachineMiddleware
+    public class StatelessMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly StateMachineMiddlewareOptions options;
-        private readonly ILogger<StateMachineMiddleware> logger;
+        private readonly StatelessMiddlewareOptions options;
+        private readonly ILogger<StatelessMiddleware> logger;
         private readonly RouteMatcher routeMatcher;
 
-        public StateMachineMiddleware(RequestDelegate next, StateMachineMiddlewareOptions options, ILogger<StateMachineMiddleware> logger)
+        public StatelessMiddleware(RequestDelegate next, StatelessMiddlewareOptions options, ILogger<StatelessMiddleware> logger)
         {
             this.next = next;
             this.options = options;
