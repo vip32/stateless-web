@@ -30,12 +30,12 @@
 
         public bool IsExpired()
         {
-            if(this.Ttl.HasValue)
+            if(!this.Ttl.HasValue)
             {
                 return false;
             }
 
-            return this.Created.AddMilliseconds(this.Ttl.Value.TotalMilliseconds) >= DateTime.Now;
+            return this.Created.AddMilliseconds(this.Ttl.Value.TotalMilliseconds) <= DateTime.Now;
         }
 
         public void AddContent(string key, string contentType, long size)
