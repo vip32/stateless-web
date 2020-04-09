@@ -8,6 +8,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.CodeAnalysis.FlowAnalysis;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -132,6 +133,16 @@
                 if (definition == null)
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    var details = new ProblemDetails()
+                    {
+                        Title = "state machine definition not found",
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Instance = $"{this.options.RoutePrefix}/{segments["name"]}/{segments["id"]}",
+                    };
+
+                    httpContext.Response.ContentType = "application/json";
+                    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(details, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+
                     return true;
                 }
 
@@ -149,11 +160,6 @@
                 }
 
                 var instance = definition.CreateInstance(context, dispatcher);
-                if (instance.Context.IsExpired())
-                {
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return true;
-                }
 
                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                 httpContext.Response.ContentType = "application/json";
@@ -182,6 +188,16 @@
                 if (definition == null)
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    var details = new ProblemDetails()
+                    {
+                        Title = "state machine definition not found",
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Instance = $"{this.options.RoutePrefix}/{segments["name"]}",
+                    };
+
+                    httpContext.Response.ContentType = "application/json";
+                    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(details, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+
                     return true;
                 }
 
@@ -219,6 +235,15 @@
                 if (definition == null)
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    var details = new ProblemDetails()
+                    {
+                        Title = "state machine definition not found",
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Instance = $"{this.options.RoutePrefix}/{segments["name"]}/{segments["id"]}",
+                    };
+
+                    httpContext.Response.ContentType = "application/json";
+                    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(details, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
                     return true;
                 }
 
@@ -226,6 +251,22 @@
                 if (context == null)
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    return true;
+                }
+
+                if (context.IsExpired())
+                {
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    var details = new ProblemDetails()
+                    {
+                        Title = "state machine is expired",
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Instance = $"{this.options.RoutePrefix}/{context.Name}/{context.Id}",
+                    };
+
+                    httpContext.Response.ContentType = "application/json";
+                    await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(details, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
+
                     return true;
                 }
 
