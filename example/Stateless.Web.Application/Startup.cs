@@ -42,7 +42,7 @@ namespace Stateless.Web.Application
                             .OnEntry((t) => Console.WriteLine($"the switch is broken {t.Destination}"))
                             .Permit(OnOffStateMachine.Triggers.Repair, OnOffStateMachine.States.Off);
                     },
-                    ttl: TimeSpan.FromSeconds(5));
+                    ttl: TimeSpan.FromDays(7));
             });
         }
 
