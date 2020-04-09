@@ -6,6 +6,6 @@
 
         string InitialState { get; }
 
-        StateMachine Create(StateMachineContext instance, ITransitionDispatcher dispatcher);
+        StateMachine CreateInstance(StateMachineContext instance, ITransitionDispatcher dispatcher);
     }
 }

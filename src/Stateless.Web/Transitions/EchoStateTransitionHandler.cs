@@ -19,13 +19,13 @@
 
         public Task OnEntryAsync(StateMachine stateMachine)
         {
-            this.logger?.LogInformation($"state entry: {stateMachine.Context.State} (handler={this.GetType().Name})");
+            this.logger?.LogInformation($"state entry: {stateMachine.Context.State} (handler={this.GetType().Name}, trigger={stateMachine.Context.Trigger})");
             return Task.CompletedTask;
         }
 
         public Task OnExitAsync(StateMachine stateMachine)
         {
-            this.logger?.LogInformation($"state exit: {stateMachine.Context.State} (handler={this.GetType().Name})");
+            this.logger?.LogInformation($"state exit: {stateMachine.Context.State} (handler={this.GetType().Name}, trigger={stateMachine.Context.Trigger})");
             return Task.CompletedTask;
         }
     }

@@ -37,13 +37,6 @@
                 }
 
                 db.FileStorage.Upload($"{context.Id}/{key}", key, stream);
-
-                context.Content.Add(key, new StateMachineContent
-                {
-                    ContentType = contentType,
-                    Size = stream.Length,
-                    Created = DateTime.UtcNow
-                });
             }
         }
     }

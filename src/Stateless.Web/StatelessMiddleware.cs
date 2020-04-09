@@ -8,6 +8,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.CodeAnalysis.FlowAnalysis;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
@@ -33,40 +34,38 @@
             IStateMachineContentStorage contentStorage,
             IEnumerable<IStatemachineDefinition> definitions)
         {
-            if (!httpContext.Request.Path.StartsWithSegments(this.options.RoutePrefix, StringComparison.OrdinalIgnoreCase))
+            if (httpContext.Request.Path.StartsWithSegments(this.options.RoutePrefix, StringComparison.OrdinalIgnoreCase))
             {
-                await this.next(httpContext).ConfigureAwait(false);
-            }
+                if (httpContext.Request.Method.SafeEquals("get"))
+                {
+                    if (await this.HandleGetAllRequest(httpContext, contextStorage).ConfigureAwait(false))
+                    {
+                        return;
+                    }
 
-            if (httpContext.Request.Method.SafeEquals("get"))
-            {
-                if (await this.HandleGetAllRequest(httpContext, contextStorage).ConfigureAwait(false))
-                {
-                    return;
-                }
+                    if (await this.HandleGetByIdRequest(httpContext, contextStorage).ConfigureAwait(false))
+                    {
+                        return;
+                    }
 
-                if (await this.HandleGetByIdRequest(httpContext, contextStorage).ConfigureAwait(false))
-                {
-                    return;
+                    if (await this.HandleGetTriggersRequest(httpContext, contextStorage, definitions, httpContext.RequestServices.GetService<ITransitionDispatcher>()).ConfigureAwait(false))
+                    {
+                        return;
+                    }
                 }
-
-                if (await this.HandleGetTriggersRequest(httpContext, contextStorage, definitions, httpContext.RequestServices.GetService<ITransitionDispatcher>()).ConfigureAwait(false))
+                else if (httpContext.Request.Method.SafeEquals("post"))
                 {
-                    return;
+                    if (await this.HandleCreateNewRequest(httpContext, contextStorage, contentStorage, definitions, httpContext.RequestServices.GetService<ITransitionDispatcher>()).ConfigureAwait(false))
+                    {
+                        return;
+                    }
                 }
-            }
-            else if (httpContext.Request.Method.SafeEquals("post"))
-            {
-                if (await this.HandleCreateNewRequest(httpContext, contextStorage, contentStorage, definitions, httpContext.RequestServices.GetService<ITransitionDispatcher>()).ConfigureAwait(false))
+                else if (httpContext.Request.Method.SafeEquals("put"))
                 {
-                    return;
-                }
-            }
-            else if (httpContext.Request.Method.SafeEquals("put"))
-            {
-                if (await this.HandleFireTriggerRequest(httpContext, contextStorage, contentStorage, definitions, httpContext.RequestServices.GetService<ITransitionDispatcher>()).ConfigureAwait(false))
-                {
-                    return;
+                    if (await this.HandleFireTriggerRequest(httpContext, contextStorage, contentStorage, definitions, httpContext.RequestServices.GetService<ITransitionDispatcher>()).ConfigureAwait(false))
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -149,10 +148,16 @@
                     return true;
                 }
 
-                var instance = definition.Create(context, dispatcher);
+                var instance = definition.CreateInstance(context, dispatcher);
+                if (instance.Context.IsExpired())
+                {
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return true;
+                }
 
                 httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                 httpContext.Response.ContentType = "application/json";
+                httpContext.Response.Headers.Add("Location", $"{this.options.RoutePrefix}/{segments["name"]}/{context.Id}");
                 await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(instance.PermittedTriggers, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
 
                 return true;
@@ -181,36 +186,15 @@
                 }
 
                 var context = new StateMachineContext() { Created = DateTime.UtcNow, Updated = DateTime.UtcNow };
-                var instance = definition.Create(context, dispatcher);
+                var instance = definition.CreateInstance(context, dispatcher);
                 instance.Activate();
+                await this.StoreContent(httpContext, "_current", context, contextStorage, contentStorage).ConfigureAwait(false);
+                await this.StoreContent(httpContext, context.State, context, contextStorage, contentStorage).ConfigureAwait(false);
 
-                // store content
-                var contentLength = httpContext.Request.ContentLength ?? 0;
-                if (httpContext.Request.Body != null && contentLength > 0)
-                {
-                    httpContext.Request.EnableBuffering(); // allow multiple reads
-                    httpContext.Request.Body.Position = 0;
-                    try
-                    {
-                        using (var stream = new MemoryStream())
-                        {
-                            await httpContext.Request.Body.CopyToAsync(stream).ConfigureAwait(false);
-                            contentStorage.Save(context, $"{context.State}", stream, httpContext.Request.ContentType);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.logger.LogWarning(ex, $"save content failed: {ex.Message}");
-                    }
-
-                    httpContext.Request.Body.Position = 0;
-                }
-
-                contextStorage.Save(context);
-
+                httpContext.Response.StatusCode = (int)HttpStatusCode.Created;
                 httpContext.Response.ContentType = "application/json";
+                httpContext.Response.Headers.Add("Location", $"{this.options.RoutePrefix}/{segments["name"]}/{context.Id}");
                 await httpContext.Response.WriteAsync(JsonConvert.SerializeObject(context, JsonSerializerSettings.Create()), Encoding.UTF8).ConfigureAwait(false);
-                // TODO: add location header >> this.CreatedAtAction(nameof(this.GetById), new { name, id = context.Id }, context);
 
                 return true;
             }
@@ -251,11 +235,13 @@
                     return true;
                 }
 
-                var instance = definition.Create(context, dispatcher);
+                var instance = definition.CreateInstance(context, dispatcher);
                 try
                 {
+                    await this.StoreContent(httpContext, "_current", context, contextStorage, contentStorage).ConfigureAwait(false);
                     if (await instance.FireAsync(segments["trigger"] as string).ConfigureAwait(false))
                     {
+                        await this.StoreContent(httpContext, context.State, context, contextStorage, contentStorage).ConfigureAwait(false);
                         this.logger.LogInformation($"statemachine: trigger successfull (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]})");
                         contextStorage.Save(context);
 
@@ -270,6 +256,7 @@
                 catch(Exception ex)
                 {
                     this.logger.LogCritical(ex, $"statemachine: trigger failed (name={segments["name"]}, id={segments["id"]}, trigger={segments["trigger"]}) {ex.Message}");
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 }
                 finally
                 {
@@ -281,6 +268,34 @@
             }
 
             return false;
+        }
+
+        private async Task StoreContent(HttpContext httpContext, string key, StateMachineContext context, IStateMachineContextStorage contextStorage, IStateMachineContentStorage contentStorage)
+        {
+            var contentLength = httpContext.Request.ContentLength ?? 0;
+            if (httpContext.Request.Body != null && contentLength > 0)
+            {
+                httpContext.Request.EnableBuffering(); // allow multiple reads
+                httpContext.Request.Body.Position = 0;
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await httpContext.Request.Body.CopyToAsync(stream).ConfigureAwait(false);
+                        this.logger.LogInformation($"statemachine: store content (name={context.Name}, id={context.Id}, key={key}, size={stream.Length}, type={httpContext.Request.ContentType})");
+                        contentStorage.Save(context, $"{key}", stream, httpContext.Request.ContentType);
+                        context.AddContent(key, httpContext.Request.ContentType, stream.Length);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogWarning(ex, $"save content failed: {ex.Message}");
+                }
+
+                httpContext.Request.Body.Position = 0;
+            }
+
+            contextStorage.Save(context);
         }
     }
 }

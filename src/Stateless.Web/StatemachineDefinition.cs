@@ -9,22 +9,27 @@
         public StatemachineDefinition(
             string name,
             string initialState,
-            Action<StateMachine> configuration = null)
+            Action<StateMachine> configuration = null,
+            TimeSpan? ttl = null)
         {
             this.Name = name;
             this.InitialState = initialState;
             this.configuration = configuration;
+            this.Ttl = ttl;
         }
 
         public string Name { get; }
 
         public string InitialState { get; }
 
-        public StateMachine Create(StateMachineContext context, ITransitionDispatcher dispatcher)
+        public TimeSpan? Ttl { get; }
+
+        public StateMachine CreateInstance(StateMachineContext context, ITransitionDispatcher dispatcher)
         {
             context.Name = this.Name;
             context.State ??= this.InitialState;
-            return new StateMachine(context, dispatcher, this.configuration);
+            context.Ttl = this.Ttl;
+            return StateMachine.Create(context, dispatcher, this.configuration);
         }
     }
 }

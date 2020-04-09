@@ -24,8 +24,8 @@ namespace Stateless.Web.Application
             {
                 o.UseLiteDBStorage();
                 o.AddStateMachine(
-                    OnOffStateMachine.Name,
-                    OnOffStateMachine.States.Off, c =>
+                    name: OnOffStateMachine.Name,
+                    initialState: OnOffStateMachine.States.Off, c =>
                     {
                         c.Configure(OnOffStateMachine.States.Off)
                             .OnActivate(() => Console.WriteLine("-OFF!"))
@@ -41,7 +41,8 @@ namespace Stateless.Web.Application
                             .OnActivate(() => Console.WriteLine("-BROKEN!"))
                             .OnEntry((t) => Console.WriteLine($"the switch is broken {t.Destination}"))
                             .Permit(OnOffStateMachine.Triggers.Repair, OnOffStateMachine.States.Off);
-                    });
+                    },
+                    ttl: TimeSpan.FromDays(7));
             });
         }
 

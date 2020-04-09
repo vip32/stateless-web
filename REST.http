@@ -38,14 +38,18 @@ PUT {{baseUrl}}/api/stateless/{{name}}/{{id}}/triggers/switch HTTP/1.1
 Content-Type: application/json
 
 {
-    "prop3": 567,
-    "prop4": 789
+    "prop3": 5677,
+    "prop4": 7897
 }
 
 ###################################################################################
 ### STATEMACHINE::FIRE_TRIGGER ONOFF > Break
 PUT {{baseUrl}}/api/stateless/{{name}}/{{id}}/triggers/break HTTP/1.1
 Content-Type: application/json
+
+{
+    "reason": "just kidding",
+}
 
 ###################################################################################
 ### STATEMACHINE::FIRE_TRIGGER ONOFF > Repair

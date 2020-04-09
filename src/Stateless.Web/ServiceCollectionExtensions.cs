@@ -31,7 +31,8 @@
             this IServiceCollection services,
             string name,
             string initialState,
-            Action<StateMachine> configuration)
+            Action<StateMachine> configuration,
+            TimeSpan? ttl)
         {
             if (services == null)
             {
@@ -43,7 +44,8 @@
                 return new StatemachineDefinition(
                         name,
                         initialState,
-                        configuration);
+                        configuration,
+                        ttl);
             });
         }
 
