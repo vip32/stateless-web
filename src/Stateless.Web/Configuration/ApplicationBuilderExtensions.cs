@@ -2,7 +2,7 @@
 {
     using Microsoft.AspNetCore.Builder;
 
-    public static class StatelessMiddlewareExtensions
+    public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseStateless(
             this IApplicationBuilder builder,

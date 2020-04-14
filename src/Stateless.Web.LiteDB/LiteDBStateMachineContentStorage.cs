@@ -1,6 +1,5 @@
 ﻿namespace Stateless.Web
 {
-    using System;
     using System.IO;
     using LiteDB;
 

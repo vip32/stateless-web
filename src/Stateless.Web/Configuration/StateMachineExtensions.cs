@@ -2,7 +2,7 @@
 {
     using static Stateless.StateMachine<string, string>;
 
-    public static class StatelessExtensions
+    public static class StateMachineExtensions
     {
         public static StateConfiguration Configure(this StateMachine source, string state)
         {
