@@ -69,7 +69,7 @@
             }
         }
 
-        internal StateMachine<string, string>.StateConfiguration Configure(string state) // leaky?
+        internal StateMachine<string, string>.StateConfiguration Configure(string state)
         {
             return this.machine.Configure(state);
         }
