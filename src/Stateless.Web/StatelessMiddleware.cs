@@ -201,10 +201,7 @@
                 }
 
                 var context = new StateMachineContext() { Created = DateTime.UtcNow, Updated = DateTime.UtcNow };
-                foreach (var query in httpContext.Request.Query.Safe())
-                {
-                    context.Properties.AddOrUpdate(query.Key, query.Value);
-                }
+                httpContext.Request.Query.ForEach(i => context.Properties.AddOrUpdate(i.Key, i.Value));
 
                 var instance = definition.CreateInstance(context, dispatcher);
                 instance.Activate();
@@ -280,11 +277,7 @@
                     return true;
                 }
 
-                foreach (var query in httpContext.Request.Query.Safe())
-                {
-                    context.Properties.AddOrUpdate(query.Key, query.Value);
-                }
-
+                httpContext.Request.Query.ForEach(i => context.Properties.AddOrUpdate(i.Key, i.Value));
                 var instance = definition.CreateInstance(context, dispatcher);
                 try
                 {
