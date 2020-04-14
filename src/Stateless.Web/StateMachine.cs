@@ -49,7 +49,7 @@
         {
             if (this.Context.IsExpired())
             {
-                throw new Exception("statemachine: cannot fire a trigger on expired state machines");
+                throw new Exception("statemachine: cannot fire trigger on expired state machines");
             }
 
             if (this.machine.CanFire(trigger))
