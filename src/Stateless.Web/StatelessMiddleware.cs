@@ -201,6 +201,11 @@
                 }
 
                 var context = new StateMachineContext() { Created = DateTime.UtcNow, Updated = DateTime.UtcNow };
+                foreach (var query in httpContext.Request.Query.Safe())
+                {
+                    context.Properties.AddOrUpdate(query.Key, query.Value);
+                }
+
                 var instance = definition.CreateInstance(context, dispatcher);
                 instance.Activate();
                 await this.StoreContent(httpContext, "_current", context, contextStorage, contentStorage).ConfigureAwait(false);
@@ -273,6 +278,11 @@
                 {
                     httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return true;
+                }
+
+                foreach (var query in httpContext.Request.Query.Safe())
+                {
+                    context.Properties.AddOrUpdate(query.Key, query.Value);
                 }
 
                 var instance = definition.CreateInstance(context, dispatcher);

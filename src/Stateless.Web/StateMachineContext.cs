@@ -28,6 +28,8 @@
             set { this.content = value?.ToList(); }
         }
 
+        public DataDictionary Properties { get; set; } = new DataDictionary();
+
         public bool IsExpired()
         {
             if(!this.Ttl.HasValue)
